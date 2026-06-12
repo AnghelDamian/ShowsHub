@@ -1,0 +1,19 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="ShowsHub.MainWindow"
+        Title="ShowsHub"
+        Width="1200" Height="760"
+        MinWidth="900" MinHeight="600"
+        Background="{DynamicResource AppBackground}"
+        TransparencyLevelHint="AcrylicBlur"
+        ExtendClientAreaToDecorationsHint="False">
+
+  <Border Background="{DynamicResource SurfaceBackground}"
+          BorderBrush="{DynamicResource CardBorderBrush}"
+          BorderThickness="1"
+          CornerRadius="16"
+          Margin="8"
+          BoxShadow="0 8 40 0 #55000000, 0 2 8 0 #337C3AED">
+    <ContentControl Content="{Binding CurrentView}"/>
+  </Border>
+</Window>

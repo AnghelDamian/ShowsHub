@@ -1,0 +1,203 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:conv="clr-namespace:ShowsHub.Converters"
+             x:Class="ShowsHub.Views.HomeView"
+             Background="{DynamicResource AppBackground}">
+  <UserControl.Resources>
+    <conv:PosterConverter x:Key="PosterConverter"/>
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="200"/>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+
+    <!-- SIDEBAR -->
+    <Border Grid.Column="0"
+            Background="{DynamicResource SidebarBackground}"
+            BorderBrush="{DynamicResource DividerBrush}"
+            BorderThickness="0,0,1,0">
+      <StackPanel Margin="0,24,0,0">
+        <TextBlock Text="SHOWSHUB"
+                   FontSize="15" FontWeight="Bold"
+                   Foreground="{DynamicResource AccentLightBrush}"
+                   LetterSpacing="3"
+                   Margin="20,0,0,32"/>
+
+        <Button Content="🔥  Trending"
+                Command="{Binding ShowTrendingCommand}"
+                Classes="ghost"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Left"
+                Margin="8,2" Padding="12,10"/>
+        <Button Content="🎬  Populare"
+                Command="{Binding ShowPopularCommand}"
+                Classes="ghost"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Left"
+                Margin="8,2" Padding="12,10"/>
+        <Button Content="🎭  Filme"
+                Command="{Binding ShowMoviesCommand}"
+                Classes="ghost"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Left"
+                Margin="8,2" Padding="12,10"/>
+        <Button Content="📺  Seriale"
+                Command="{Binding ShowSeriesCommand}"
+                Classes="ghost"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Left"
+                Margin="8,2" Padding="12,10"/>
+
+        <Border Height="1" Background="{DynamicResource DividerBrush}" Margin="16,12"/>
+
+        <Button Content="♥  Favorite"
+                Command="{Binding ShowFavoritesCommand}"
+                Classes="ghost"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Left"
+                Margin="8,2" Padding="12,10"/>
+        <Button Content="🕐  Watchlist"
+                Command="{Binding ShowWatchlistCommand}"
+                Classes="ghost"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Left"
+                Margin="8,2" Padding="12,10"/>
+
+        <Border Height="1" Background="{DynamicResource DividerBrush}" Margin="16,12"/>
+
+        <Button Content="⚙  Setări"
+                Command="{Binding NavigateSettingsCommand}"
+                Classes="ghost"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Left"
+                Margin="8,2" Padding="12,10"/>
+      </StackPanel>
+    </Border>
+
+    <!-- MAIN CONTENT -->
+    <DockPanel Grid.Column="1">
+
+      <!-- TOP BAR -->
+      <Border DockPanel.Dock="Top"
+              Background="{DynamicResource SidebarBackground}"
+              BorderBrush="{DynamicResource DividerBrush}"
+              BorderThickness="0,0,0,1"
+              Padding="20,12">
+        <Grid ColumnDefinitions="*,Auto,Auto">
+          <TextBox Grid.Column="0"
+                   Watermark="🔍  Caută filme sau seriale..."
+                   Text="{Binding SearchText}"
+                   MaxWidth="560" HorizontalAlignment="Stretch"/>
+          <Button Grid.Column="1"
+                  Content="Caută"
+                  Command="{Binding SearchCommand}"
+                  Margin="10,0,0,0" Padding="20,8"/>
+          <TextBlock Grid.Column="2"
+                     Text="{Binding WelcomeText}"
+                     Foreground="{DynamicResource TextSecondaryBrush}"
+                     FontSize="13" VerticalAlignment="Center"
+                     Margin="16,0,0,0"/>
+        </Grid>
+      </Border>
+
+      <!-- LOADING -->
+      <Border DockPanel.Dock="Top"
+              IsVisible="{Binding IsLoading}"
+              Background="{DynamicResource AccentDimBrush}"
+              Padding="20,8">
+        <TextBlock Text="⏳ Se încarcă..."
+                   Foreground="{DynamicResource AccentLightBrush}"
+                   FontSize="13"/>
+      </Border>
+
+      <!-- SECTION TITLE -->
+      <Border DockPanel.Dock="Top" Padding="20,16,20,4"
+              IsVisible="{Binding !IsLoading}">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+          <TextBlock Text="{Binding SectionTitle}"
+                     FontSize="20" FontWeight="Bold"
+                     Foreground="{DynamicResource TextBrush}"/>
+          <TextBlock Text="{Binding ItemCountText}"
+                     FontSize="13"
+                     Foreground="{DynamicResource TextSecondaryBrush}"
+                     VerticalAlignment="Center"/>
+        </StackPanel>
+      </Border>
+
+      <!-- EMPTY STATE -->
+      <Border DockPanel.Dock="Top"
+              IsVisible="{Binding IsEmpty}"
+              Padding="20,60">
+        <StackPanel HorizontalAlignment="Center" Spacing="12">
+          <TextBlock Text="{Binding EmptyMessage}"
+                     FontSize="48" HorizontalAlignment="Center"/>
+          <TextBlock Text="{Binding EmptySubMessage}"
+                     FontSize="15"
+                     Foreground="{DynamicResource TextSecondaryBrush}"
+                     HorizontalAlignment="Center"
+                     TextAlignment="Center"/>
+        </StackPanel>
+      </Border>
+
+      <!-- CARD GRID -->
+      <ScrollViewer Padding="20,8,20,20">
+        <ItemsControl ItemsSource="{Binding Items}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel Orientation="Horizontal"/>
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Border CornerRadius="12" Margin="0,0,14,14"
+                      Width="185"
+                      Background="{DynamicResource CardBackground}"
+                      BorderBrush="{DynamicResource CardBorderBrush}"
+                      BorderThickness="1">
+                <StackPanel>
+                  <Border CornerRadius="12,12,0,0" Height="260"
+                          ClipToBounds="True"
+                          Background="#1a1830">
+                    <Image Source="{Binding Poster, Converter={StaticResource PosterConverter}}"
+                           Stretch="UniformToFill"/>
+                  </Border>
+                  <StackPanel Margin="10,8,10,10" Spacing="5">
+                    <TextBlock Text="{Binding Title}"
+                               FontWeight="SemiBold" FontSize="13"
+                               Foreground="{DynamicResource TextBrush}"
+                               TextWrapping="Wrap" MaxLines="2"/>
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                      <Border Background="{DynamicResource AccentDimBrush}"
+                              CornerRadius="8" Padding="6,2">
+                        <TextBlock Text="{Binding Type}" FontSize="10"
+                                   Foreground="{DynamicResource AccentLightBrush}"/>
+                      </Border>
+                      <StackPanel Orientation="Horizontal" Spacing="2" VerticalAlignment="Center">
+                        <TextBlock Text="★" Foreground="{DynamicResource GoldBrush}" FontSize="11"/>
+                        <TextBlock Text="{Binding Rating, StringFormat={}{0:F1}}" FontSize="11"
+                                   Foreground="{DynamicResource GoldBrush}" FontWeight="Medium"/>
+                      </StackPanel>
+                      <TextBlock Text="{Binding Year}" FontSize="11"
+                                 Foreground="{DynamicResource TextSecondaryBrush}"
+                                 VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button Content="Detalii"
+                            Command="{Binding DataContext.OpenDetailsCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                            CommandParameter="{Binding}"
+                            FontSize="12" Padding="0,7"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Margin="0,4,0,0"/>
+                  </StackPanel>
+                </StackPanel>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+
+    </DockPanel>
+  </Grid>
+</UserControl>
